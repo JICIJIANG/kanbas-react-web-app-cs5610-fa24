@@ -1,0 +1,79 @@
+/* Assignments.css */
+
+/* 主要容器 */
+#wd-assignments {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Times New Roman', Times, serif, sans-serif;
+    color: #333;
+  }
+  
+  /* 搜索框样式 */
+  #wd-search-assignment {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  /* 按钮样式 */
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 9px;
+    margin-right: 10px;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* 标题样式 */
+  #wd-assignments-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  #wd-assignments-title button {
+    font-size: 18px;
+    padding: 5px 10px;
+  }
+  
+  /* 列表样式 */
+  #wd-assignment-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .wd-assignment-list-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .wd-assignment-list-item p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* 链接样式 */
+  .wd-assignment-link {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 16px;
+  }
+  
+  .wd-assignment-link:hover {
+    text-decoration: underline;
+  }

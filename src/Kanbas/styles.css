@@ -1,0 +1,64 @@
+body   {  margin: 0;  padding: 0;  }
+body * {  font-family: Arial, Helvetica, sans-serif;  }
+
+@media (min-width: 768px) {
+  #wd-kanbas .wd-main-content-offset {
+    padding-left: 140px !important;
+  }
+}
+.content {
+    margin-left: 140px;
+    padding-top: 20px; 
+  }
+
+.list-group.wd > .list-group-item.active {
+    color: black;
+    background-color: white;
+    border-left: 3px solid black !important;
+  }
+  .btn-secondary {
+    --bs-btn-color: #000 !important;
+    --bs-btn-bg: #CCCCCC !important;
+    --bs-btn-border-color: #CCCCCC !important;
+    --bs-btn-hover-color: #fff !important;
+  }
+  .bg-secondary {
+    --bs-secondary-rgb: 199, 205, 209;
+  }
+  .list-group-item {
+    --bs-list-group-border-color: #CCCCCC;
+  }
+  .wd-lesson {
+    border-left: 3px solid green !important;
+  }
+  .course-status-container {
+    width: 230px;
+    margin-left: 20px; 
+}
+
+@media (max-width: 1200px) {
+    .course-status-container {
+        display: none; 
+    }
+}
+
+@media (max-width: 800px) {
+    .course-status-container {
+        display: block; 
+        width: 100%; 
+        margin-left: 0;
+    }
+
+    .sidebar, .main-content {
+        display: none; 
+    }
+}
+
+@media (max-width: 800px) {
+    .course-status-container {
+        font-size: 0.9rem; 
+    }
+}
+.form-control {
+    width: 100%; /* 或者根据需要设置具体的宽度 */
+}

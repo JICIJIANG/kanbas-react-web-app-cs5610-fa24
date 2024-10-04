@@ -1,18 +1,17 @@
 import React from "react";
 import Modules from "../Modules";
 import CourseStatus from "./Status";
-export default function Home() {
-  return (
-    <table id="wd-home">
-      <tr>
-        <td valign="top">
+  export default function Home() {
+    return (
+      <div className="row" id="wd-home">
+        <div className="col-md-8 col-sm-12">
           <Modules />
-        </td>
-        <td valign="top">
+        </div>
+  
+        <div className="col-md-3 d-none d-md-block">
           <CourseStatus />
-        </td>
-      </tr>
-    </table>
-  );
-}
-
+        </div>
+      </div>
+    );
+  }
+  

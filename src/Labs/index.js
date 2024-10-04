@@ -8,7 +8,6 @@ import React from 'react';
 export default function Labs(){
     return (
         <div>            
-            <h3>Jici Jiang (Section: 03) </h3>
             <h1>Labs</h1>
             <TOC />
             <Routes>

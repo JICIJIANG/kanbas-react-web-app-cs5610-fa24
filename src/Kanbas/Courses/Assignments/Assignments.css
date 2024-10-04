@@ -1,79 +1,160 @@
-/* Assignments.css */
+/* Assignments 容器布局 */
+.assignments-container {
+    display: flex;
+}
 
-/* 主要容器 */
-#wd-assignments {
-    max-width: 800px;
-    margin: 0 auto;
+/* Assignments 内容区域 */
+.assignments-content {
     padding: 20px;
-    font-family: 'Times New Roman', Times, serif, sans-serif;
-    color: #333;
-  }
-  
-  /* 搜索框样式 */
-  #wd-search-assignment {
-    width: 100%;
-    padding: 10px;
+    flex-grow: 1;
+}
+
+/* 搜索框和按钮布局 */
+.assignments-header {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 20px;
+}
+
+
+.search-container {
+    position: relative;
+    width: 60%; /* 使搜索框更长 */
+}
+
+.search-input {
+    width: 90%; /* 搜索框占满父容器 */
+    padding: 10px 40px 10px 40px; /* 内边距，留出图标空间 */
+    font-size: 18px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 16px;
-  }
-  
-  /* 按钮样式 */
-  button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 10px;
-    font-size: 14px;
+}
+
+.search-icon {
+    position: absolute; /* 图标绝对定位 */
+    left: 10px; /* 图标距离左边的距离 */
+    top: 50%; /* 垂直居中 */
+    transform: translateY(-50%); /* 通过变换进行精确居中 */
+    font-size: 20px; /* 搜索图标大小 */
+    color: grey; /* 搜索图标颜色 */
+}
+
+/* Group 和 Assignment 按钮样式 */
+.assignment-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-group {
+    background-color: #f0f0f0;
+    color: black;
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: 1px solid grey;
     cursor: pointer;
-    border-radius: 9px;
-    margin-right: 10px;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* 标题样式 */
-  #wd-assignments-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
+    font-size: 20px
+}
+
+.btn-add {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 20px
+}
+
+.btn-group:hover, .btn-add:hover {
+    background-color: #e60000;
+}
+
+/* Assignments 标题和 40% 小圆角框样式 */
+.assignments-title-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
-  
-  #wd-assignments-title button {
-    font-size: 18px;
-    padding: 5px 10px;
-  }
-  
-  /* 列表样式 */
-  #wd-assignment-list {
-    list-style-type: none;
+    margin-bottom: 0px;
+    padding: 28px; /* 添加内边距 */
+    border: 2px #ddd; /* 添加边框 */
+    border-radius: 0px; /* 小圆角 */
+    background-color: #ddd
+}
+
+.assignments-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.assignments-percentage-box {
+    background-color: #f0f0f0; 
+    border-radius: 4px; 
+    padding: 5px 10px; 
+    font-size: 18px; 
+    color: black; 
+    margin-left: 10px; 
+}
+
+/* Assignments 列表布局 */
+.assignment-list {
     padding: 0;
-  }
-  
-  .wd-assignment-list-item {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .wd-assignment-list-item p {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #666;
-  }
-  
-  /* 链接样式 */
-  .wd-assignment-link {
-    text-decoration: none;
-    color: #007bff;
-    font-size: 16px;
-  }
-  
-  .wd-assignment-link:hover {
-    text-decoration: underline;
-  }
+}
+
+/* 连续的 Assignment 项目 */
+.assignment-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 每个任务项的样式，增加灰色框 */
+.assignment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #ddd; /* 添加边框 */
+    background-color: white;
+    margin-bottom: 0px; /* 添加底部间距 */
+}
+
+.assignment-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.assignment-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: rgba(14, 14, 14, 0.823);
+}
+
+.assignment-details {
+    font-size: 18px;
+    color: rgba(14, 14, 14, 0.728);
+}
+
+/* Assignment 控制按钮和图标 */
+.assignment-controls {
+    display: flex;
+    align-items: center;
+}
+
+.check-icon {
+    color: green;
+    font-size: 20px;
+    margin-right: 15px;
+}
+
+.more-options {
+    font-size: 20px;
+    color: grey;
+    cursor: pointer;
+    margin-left: 5px
+}
+.assignments-percentage-container > svg {
+    margin-left: 0; /* 移除左边距 */
+}
+
+.assignments-percentage-box {
+    margin-right: 5px; /* 根据需要调整 */
+}

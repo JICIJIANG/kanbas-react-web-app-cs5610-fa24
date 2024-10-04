@@ -34,45 +34,45 @@ export default function ModulesControls() {
         </button>
         <ul className="dropdown-menu">
           <li>
-            <a
+            <button
               id="wd-publish-all-modules-and-items-btn"
               className="dropdown-item"
-              href="#"
+              onClick={() => console.log("Publish all modules and items")}
             >
               <GreenCheckmark />
               Publish all modules and items
-            </a>
+            </button>
           </li>
           <li>
-            <a
+            <button
               id="wd-publish-modules-only-button"
               className="dropdown-item"
-              href="#"
+              onClick={() => console.log("Publish modules only")}
             >
               <GreenCheckmark />
               Publish modules only
-            </a>
+            </button>
           </li>
           {/* New Unpublish Items */}
           <li>
-            <a
+            <button
               id="wd-unpublish-all-modules-and-items"
               className="dropdown-item"
-              href="#"
+              onClick={() => console.log("Unpublish all modules and items")}
             >
               <FaBan className="me-2" />
               Unpublish all modules and items
-            </a>
+            </button>
           </li>
           <li>
-            <a
+            <button
               id="wd-unpublish-modules-only"
               className="dropdown-item"
-              href="#"
+              onClick={() => console.log("Unpublish modules only")}
             >
               <FaBan className="me-2" />
               Unpublish modules only
-            </a>
+            </button>
           </li>
         </ul>
       </div>
@@ -103,5 +103,3 @@ export default function ModulesControls() {
     </div>
   );
 }
-
-

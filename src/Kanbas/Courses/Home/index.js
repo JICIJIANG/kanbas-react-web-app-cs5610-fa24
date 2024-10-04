@@ -4,7 +4,7 @@ import CourseStatus from "./Status";
   export default function Home() {
     return (
       <div className="row" id="wd-home">
-        <div className="col-md-8 col-sm-12">
+        <div className="col-md-9 col-sm-12">
           <Modules />
         </div>
   

@@ -1,12 +1,16 @@
 import React from 'react';
+import { useParams} from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa';
-import { BsGripVertical, BsPlus} from 'react-icons/bs';
-import { BsThreeDotsVertical } from 'react-icons/bs';
+import { BsGripVertical, BsPlus, BsThreeDotsVertical } from 'react-icons/bs';
 import { TbFilePencil } from "react-icons/tb";
 import { FaCheckCircle } from 'react-icons/fa';
 import './Assignments.css'; 
+import * as db from '../../Database';
 
 export default function Assignments() {
+    const { cid } = useParams();
+    const assignments = db.assignments.filter(assignment => assignment.course === cid); // 筛选对应课程的作业
+
     return (
         <div className="assignments-content">
             <div className="assignments-header">
@@ -22,9 +26,9 @@ export default function Assignments() {
 
             <div className="assignments-title-row">
                 <h3 className="assignments-title">
-                <div className="d-flex align-items-center me-2">
-                    <BsGripVertical className="me-2 fs-4" />ASSIGNMENTS 
-                </div>
+                    <div className="d-flex align-items-center me-2">
+                        <BsGripVertical className="me-2 fs-4" />ASSIGNMENTS 
+                    </div>
                 </h3>
                 <div className="assignments-percentage-container" style={{ display: 'flex', alignItems: 'center' }}>
                     <span className="assignments-percentage-box">
@@ -35,82 +39,28 @@ export default function Assignments() {
                 </div>
             </div>
 
-
             <div className="assignment-list">
-                <div className="assignment-group">
-                    <a className="assignment-item d-flex align-items-center" href="#/Kanbas/Courses/1234/Assignments/123">
-                        {/* Icons */}
-                        <div className="d-flex align-items-center me-2">
-                            <BsGripVertical className="me-2 fs-4" />
-                            <TbFilePencil className="me-2 fs-4" />
-                        </div>
-                        {/* Assignment title and details */}
-                        <div className="assignment-info flex-grow-1">
-                            <span className="assignment-title">A1</span>
-                            <p className="assignment-details">
-                                <span className="text-danger" style={{ textDecoration: 'none' }}>Multiple Modules</span> | Not available until May 6 at 12:00am<br />
-                                Due May 13 at 11:59pm | 100 pts
-                            </p>
-                        </div>
-                        {/* Controls on the right */}
-                        <div className="assignment-controls d-flex align-items-center">
-                            <FaCheckCircle className="check-icon me-2" />
-                            <BsThreeDotsVertical className="more-options" />
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-
-
-
-            <div className="assignment-list">
-              <div className="assignment-group">
-                  <a className="assignment-item d-flex align-items-center" href="#/Kanbas/Courses/1234/Assignments/123">
-                      {/* Icons */}
-                      <div className="d-flex align-items-center me-2">
-                          <BsGripVertical className="me-2 fs-4" />
-                          <TbFilePencil className="me-2 fs-4" />
-                      </div>                     
-                      {/* Assignment title and details */}
-                      <div className="assignment-info flex-grow-1">
-                          <span className="assignment-title">A2</span>
-                          <p className="assignment-details">
-                          <span className="text-danger">Multiple Modules</span> | Not available until May 13 at 12:00am<br />
-                          Due May 20 at 11:59pm | 100 pts
-                          </p>
-                      </div>                     
-                      {/* Controls on the right */}
-                      <div className="assignment-controls d-flex align-items-center">
-                          <FaCheckCircle className="check-icon me-2" />
-                          <BsThreeDotsVertical className="more-options" />
-                      </div>
-                  </a></div></div>
-
-                  <div className="assignment-list">
-              <div className="assignment-group">
-                  <a className="assignment-item d-flex align-items-center" href="#/Kanbas/Courses/1234/Assignments/123">
-                      {/* Icons */}
-                      <div className="d-flex align-items-center me-2">
-                          <BsGripVertical className="me-2 fs-4" />
-                          <TbFilePencil className="me-2 fs-4" />
-                      </div>                     
-                      {/* Assignment title and details */}
-                      <div className="assignment-info flex-grow-1">
-                          <span className="assignment-title">A3</span>
-                          <p className="assignment-details">
-                          <span className="text-danger">Multiple Modules</span> | Not available until May 20 at 12:00am<br />
-                          Due May 27 at 11:59pm | 100 pts
-                          </p>
-
-                      </div>                     
-                      {/* Controls on the right */}
-                      <div className="assignment-controls d-flex align-items-center">
-                          <FaCheckCircle className="check-icon me-2" />
-                          <BsThreeDotsVertical className="more-options" />
-                      </div>
-                  </a>
-                </div>
+                {assignments.map(assignment => (
+                    <div className="assignment-group" key={assignment._id}>
+                        <a className="assignment-item d-flex align-items-center" href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}>
+                            <div className="d-flex align-items-center me-2">
+                                <BsGripVertical className="me-2 fs-4" />
+                                <TbFilePencil className="me-2 fs-4" />
+                            </div>
+                            <div className="assignment-info flex-grow-1">
+                                <span className="assignment-title">{assignment.title}</span>
+                                <p className="assignment-details">
+                                    <span className="text-danger">Multiple Modules</span> | Not available until May 20 at 12:00am<br />
+                                    Due May 27 at 11:59pm | 100 pts
+                                </p>
+                            </div>
+                            <div className="assignment-controls d-flex align-items-center">
+                                <FaCheckCircle className="check-icon me-2" />
+                                <BsThreeDotsVertical className="more-options" />
+                            </div>
+                        </a>
+                    </div>
+                ))}
             </div>
         </div>
     );

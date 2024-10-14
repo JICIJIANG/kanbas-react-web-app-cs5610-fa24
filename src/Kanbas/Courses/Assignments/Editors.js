@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useParams, Link } from 'react-router-dom';
+import * as db from "../../Database";
 
 export default function AssignmentEditor() {
+    const { cid, aid } = useParams(); 
+    const [assignment, setAssignment] = useState(null);
+    const [course, setCourse] = useState(null);
     const [submissionType, setSubmissionType] = useState('Online');
     const [onlineEntryOptions, setOnlineEntryOptions] = useState({
         textEntry: false,
@@ -10,6 +15,18 @@ export default function AssignmentEditor() {
         studentAnnotation: false,
         fileUploads: false,
     });
+
+    useEffect(() => {
+        const selectedAssignment = db.assignments.find(a => a._id === aid);
+        if (selectedAssignment) {
+            setAssignment(selectedAssignment);
+        }
+
+        const selectedCourse = db.courses.find(c => c._id === cid);
+        if (selectedCourse) {
+            setCourse(selectedCourse);
+        }
+    }, [aid, cid]);
 
     const handleSubmissionTypeChange = (event) => {
         setSubmissionType(event.target.value);
@@ -23,13 +40,22 @@ export default function AssignmentEditor() {
         }));
     };
 
+    if (!assignment || !course) {
+        return <div>Loading...</div>; 
+    }
+
+    const dueDate = new Date(course.endDate);
+    dueDate.setUTCHours(23, 59);
+    const availableFrom = new Date(course.startDate);
+    availableFrom.setUTCHours(23, 59);
+
     return (
         <div className="container mt-4">
             {/* Assignment Name */}
             <div className="row mb-3">
                 <div className="col-md-12">
                     <label htmlFor="wd-name" className="form-label">Assignment Name</label>
-                    <input id="wd-name" defaultValue="A1" className="form-control" />
+                    <input id="wd-name" defaultValue={assignment.title} className="form-control" />
                 </div>
             </div>
 
@@ -40,13 +66,7 @@ export default function AssignmentEditor() {
                         id="wd-description"
                         rows={8}
                         className="form-control"
-                        defaultValue={`The assignment is available online. Submit a link to the landing page of your Web application running on Netlify. 
-The landing page should include the following:
-- Your full name and section
-- Links to each of the lab assignments
-- Link to the Kanbas application
-- Links to all relevant source code repositories
-The Kanbas application should include a link to navigate back to the landing page.`}
+                        defaultValue={assignment.description || course.description}
                     />
                 </div>
             </div>
@@ -63,7 +83,7 @@ The Kanbas application should include a link to navigate back to the landing pag
             <div className="row mb-3">
                 <div className="col-md-4">
                     <label htmlFor="wd-group" className="form-label">Assignment Group</label>
-                    <select id="wd-group" className="form-control" defaultValue="ASSIGNMENTS">
+                    <select id="wd-group" className="form-control" defaultValue={assignment.group || "ASSIGNMENTS"}>
                         <option value="ASSIGNMENTS">ASSIGNMENTS</option>
                         <option value="OTHERS">OTHERS</option>
                     </select>
@@ -133,24 +153,24 @@ The Kanbas application should include a link to navigate back to the landing pag
             <div className="row mb-3">
                 <div className="col-md-4">
                     <label htmlFor="wd-due" className="form-label">Due</label>
-                    <input type="datetime-local" id="wd-due" defaultValue="2024-05-13T23:59" className="form-control" />
+                    <input type="datetime-local" id="wd-due" defaultValue={dueDate.toISOString().slice(0, 16)} className="form-control" />
                 </div>
             </div>
 
             <div className="row mb-3">
                 <div className="col-md-4">
                     <label htmlFor="wd-available-from" className="form-label">Available from</label>
-                    <input type="datetime-local" id="wd-available-from" defaultValue="2024-05-06T12:00" className="form-control" />
+                    <input type="datetime-local" id="wd-available-from" defaultValue={availableFrom.toISOString().slice(0, 16)} className="form-control" />
                 </div>
                 <div className="col-md-4">
                     <label htmlFor="wd-until" className="form-label">Until</label>
-                    <input type="datetime-local" id="wd-until" defaultValue="2024-05-13T23:59" className="form-control" />
+                    <input type="datetime-local" id="wd-until" defaultValue={dueDate.toISOString().slice(0, 16)} className="form-control" />
                 </div>
             </div>
 
             {/* Save and Cancel Buttons */}
             <div className="d-flex justify-content-end">
-                <button className="btn btn-secondary me-2">Cancel</button>
+                <Link to={`/Kanbas/Courses/${cid}/Assignments`} className="btn btn-secondary me-2">Cancel</Link>
                 <button className="btn btn-success">Save</button>
             </div>
         </div>

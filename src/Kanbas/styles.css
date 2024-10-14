@@ -11,16 +11,37 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
     padding-top: 20px; 
   }
 
+.btn-danger{
+    --bs-btn-padding-y: 0.4rem;
+    --bs-btn-padding-x: 1rem;
+    --bs-btn-font-size: 1.2rem;
+    --bs-btn-border-radius: var(--bs-border-radius-lg);
+    margin-top: .25rem !important;
+}
+.btn-success{
+    --bs-btn-padding-y: 0.4rem;
+    --bs-btn-padding-x: 1rem;
+    --bs-btn-font-size: 1.2rem;
+    --bs-btn-border-radius: var(--bs-border-radius-lg);
+    margin-top: .25rem !important;
+}
+
 .list-group.wd > .list-group-item.active {
     color: black;
     background-color: white;
     border-left: 3px solid black !important;
   }
+
   .btn-secondary {
     --bs-btn-color: #000 !important;
     --bs-btn-bg: #CCCCCC !important;
     --bs-btn-border-color: #CCCCCC !important;
     --bs-btn-hover-color: #fff !important;
+    --bs-btn-padding-y: 0.4rem;
+    --bs-btn-padding-x: 1rem;
+    --bs-btn-font-size: 1.2rem;
+    --bs-btn-border-radius: var(--bs-border-radius-lg);
+    margin-top: .25rem !important;
   }
   .bg-secondary {
     --bs-secondary-rgb: 199, 205, 209;
@@ -62,3 +83,5 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
 .form-control {
     width: 100%; /* 或者根据需要设置具体的宽度 */
 }
+
+

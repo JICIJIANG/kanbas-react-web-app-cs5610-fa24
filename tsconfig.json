@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+      "typeRoots": ["./node_modules/@types"],
+      "types": ["json-schema", "parse-json"]
+      "target": "es5",
+      "lib": [
+        "dom",
+        "dom.iterable",
+        "esnext"
+      ],
+      "allowJs": true,
+      "skipLibCheck": true,
+      "esModuleInterop": true, // 确保开启此选项以支持默认导入
+      "allowSyntheticDefaultImports": true,
+      "strict": true,
+      "forceConsistentCasingInFileNames": true,
+      "noFallthroughCasesInSwitch": true,
+      "module": "esnext",
+      "moduleResolution": "node",
+      "resolveJsonModule": true, // 允许导入 JSON 模块
+      "isolatedModules": true,
+      "noEmit": true,
+      "jsx": "react-jsx"
+    },
+    "include": [
+      "src"
+    ]
+  }
+  

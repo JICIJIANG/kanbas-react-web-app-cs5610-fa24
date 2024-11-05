@@ -18,6 +18,11 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
     --bs-btn-border-radius: var(--bs-border-radius-lg);
     margin-top: .25rem !important;
 }
+.btn-primary-danger {
+  background-color: #dc3545; /* 设置背景颜色为红色 */
+  border-color: #dc3545; /* 设置边框颜色为红色 */
+  color: white;
+}
 .btn-success{
     --bs-btn-padding-y: 0.4rem;
     --bs-btn-padding-x: 1rem;
@@ -84,4 +89,10 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
     width: 100%; /* 或者根据需要设置具体的宽度 */
 }
 
+.unenroll-btn {
+  position: absolute;
+  top: 10px;   /* 距离顶部的距离 */
+  right: 10px; /* 距离右侧的距离 */
+  z-index: 1;
+}
 

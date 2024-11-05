@@ -108,6 +108,8 @@
 
 /* 每个任务项的样式，增加灰色框 */
 .assignment-item {
+    text-decoration: none; /* 去除下划线 */
+    color: black; /* 设置为黑色或你想要的颜色 */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -137,6 +139,7 @@
 .assignment-controls {
     display: flex;
     align-items: center;
+    color: green;
 }
 
 .check-icon {

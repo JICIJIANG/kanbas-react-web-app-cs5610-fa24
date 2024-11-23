@@ -14,7 +14,8 @@ export default function HttpClient() {
         const welcome = await client.fetchWelcomeMessage();
         setWelcomeOnLoad(welcome);
       };
-      useEffect(() => {
+
+    useEffect(() => {
         fetchWelcomeOnLoad();
       }, []);
   return (
@@ -25,6 +26,9 @@ export default function HttpClient() {
         Fetch Welcome
       </button> <br />
       Response from server: <b>{welcomeOnClick}</b>
+      <hr />
+      <h4>Welcome Message on Load</h4>
+      <p>{welcomeOnLoad}</p>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createAssignment, updateAssignment } from "./client"; // 后端 API 方法
@@ -12,7 +12,10 @@ export default function AssignmentEditor() {
 
   // 从 Redux Store 获取作业列表
   const assignments = useSelector((state) => state.assignments?.assignments || []);
-  const currentAssignment = assignments.find((a) => a._id === aid) || {};
+  const currentAssignment = useMemo(
+    () => assignments.find((a) => a._id === aid) || {},
+    [assignments, aid]
+  );
 
   // 初始状态设置
   const [assignment, setAssignment] = useState({

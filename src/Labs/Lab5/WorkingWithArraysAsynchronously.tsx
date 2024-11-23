@@ -6,7 +6,7 @@ import { FaTrash } from "react-icons/fa";
 import { FaPlusCircle } from "react-icons/fa";
 export default function WorkingWithArraysAsynchronously() {
   const [todos, setTodos] = useState<any[]>([]);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage] = useState(null);
   const createTodo = async () => {
     const todos = await client.createTodo();
     setTodos(todos);

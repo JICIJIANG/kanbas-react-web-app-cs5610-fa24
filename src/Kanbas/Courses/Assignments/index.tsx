@@ -1,27 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { FaCheckCircle, FaTrash } from 'react-icons/fa';
-import { BsGripVertical, BsPlus, BsThreeDotsVertical } from 'react-icons/bs';
-import { TbFilePencil } from 'react-icons/tb';
-import {deleteAssignment} from './reducer'; // 确保 reducer 中有 deleteAssignment action
-import AssignmentsControls from './AssControls';
-import './Assignments.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { FaCheckCircle, FaTrash } from "react-icons/fa";
+import { BsGripVertical, BsPlus, BsThreeDotsVertical } from "react-icons/bs";
+import { TbFilePencil } from "react-icons/tb";
+import {
+  setAssignments,
+  deleteAssignment as deleteAssignmentReducer,
+  updateAssignment as updateAssignmentReducer,
+} from "./reducer"; // Redux 方法
+import {
+  findAssignments,
+  deleteAssignment,
+  updateAssignment,
+} from "./client"; // 后端 API 方法
+import AssignmentsControls from "./AssControls";
+import "./Assignments.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
-export default function Assignments({
-  assignmentName,
-  setAssignmentName,
-}) {
-  const { cid } = useParams();
+export default function Assignments({ assignmentName, setAssignmentName }) {
+  const { cid } = useParams(); // 获取课程 ID
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // 从 Redux Store 中获取 assignments，筛选出当前课程相关的作业
-  const assignments = useSelector(state => state.assignments.assignments).filter(
-    (assignment) => assignment.course === cid
-  );
+  // 从 Redux Store 中获取作业列表
+  const assignments = useSelector(
+    (state) => state.assignments?.assignments || []
+  ).filter((assignment) => assignment.course === cid);
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [assignmentToDelete, setAssignmentToDelete] = useState(null);
@@ -31,17 +37,35 @@ export default function Assignments({
     navigate(`/Kanbas/Courses/${cid}/Assignments/Editor`);
   };
 
-  // 删除作业的确认和取消
+  // 从服务器加载作业数据
+  useEffect(() => {
+    const fetchAssignments = async () => {
+      try {
+        const assignmentsFromServer = await findAssignments();
+        dispatch(setAssignments(assignmentsFromServer)); // 将作业设置到 Redux Store
+      } catch (error) {
+        console.error("Error fetching assignments:", error);
+      }
+    };
+    fetchAssignments();
+  }, [dispatch]);
+
+  // 删除作业
   const handleDeleteClick = (assignment) => {
     setAssignmentToDelete(assignment);
     setShowDeleteDialog(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (assignmentToDelete) {
-      dispatch(deleteAssignment(assignmentToDelete._id));
-      setShowDeleteDialog(false);
-      setAssignmentToDelete(null);
+      try {
+        await deleteAssignment(assignmentToDelete._id); // 后端删除
+        dispatch(deleteAssignmentReducer(assignmentToDelete._id)); // 更新 Redux Store
+        setShowDeleteDialog(false);
+        setAssignmentToDelete(null);
+      } catch (error) {
+        console.error("Error deleting assignment:", error);
+      }
     }
   };
 
@@ -50,10 +74,16 @@ export default function Assignments({
     setAssignmentToDelete(null);
   };
 
-  // 监听 assignments 的更新，以确保组件重新渲染
-  useEffect(() => {
-    console.log("Assignments updated:", assignments);
-  }, [assignments]);
+  // 更新作业（示例：标记为完成）
+  const handleCompleteAssignment = async (assignment) => {
+    const updatedAssignment = { ...assignment, completed: true };
+    try {
+      const result = await updateAssignment(updatedAssignment); // 调用后端更新方法
+      dispatch(updateAssignmentReducer(result)); // 更新 Redux Store
+    } catch (error) {
+      console.error("Error updating assignment:", error);
+    }
+  };
 
   return (
     <div className="assignments-content">
@@ -61,7 +91,7 @@ export default function Assignments({
       <AssignmentsControls
         setAssignmentName={setAssignmentName}
         assignmentName={assignmentName}
-        addAssignment={handleAddAssignment}  // 确保使用 handleAddAssignment 进行导航
+        addAssignment={handleAddAssignment}
         cid={cid}
       />
 
@@ -71,7 +101,10 @@ export default function Assignments({
             <BsGripVertical className="me-2 fs-4" /> ASSIGNMENTS
           </div>
         </h3>
-        <div className="assignments-percentage-container" style={{ display: 'flex', alignItems: 'center' }}>
+        <div
+          className="assignments-percentage-container"
+          style={{ display: "flex", alignItems: "center" }}
+        >
           <span className="assignments-percentage-box">40% of Total</span>
           <BsPlus className="ms-1 fs-4" />
           <BsThreeDotsVertical className="more-options ms-1 fs-4" />
@@ -88,18 +121,30 @@ export default function Assignments({
             >
               <div className="d-flex align-items-center me-2">
                 <BsGripVertical className="me-2 fs-4" />
-                <TbFilePencil className="me-2 fs-4" style={{ color: 'green' }} />
+                <TbFilePencil
+                  className="me-2 fs-4"
+                  style={{ color: "green" }}
+                />
               </div>
               <div className="assignment-info flex-grow-1">
                 <span className="assignment-title">{assignment.title}</span>
                 <p className="assignment-details">
-                    <span className="text-danger">Multiple Modules</span> | Not available until {new Date(assignment.availableFrom).toLocaleString()}
-                    <br />
-                    Due {new Date(assignment.until).toLocaleString()} | {assignment.points} pts
-                  </p>
+                  <span className="text-danger">Multiple Modules</span> | Not
+                  available until{" "}
+                  {new Date(assignment.availableFrom).toLocaleString()}
+                  <br />
+                  Due {new Date(assignment.until).toLocaleString()} |{" "}
+                  {assignment.points} pts
+                </p>
               </div>
               <div className="assignment-controls d-flex align-items-center">
-                <FaCheckCircle className="check-icon me-2" />
+                <FaCheckCircle
+                  className="check-icon me-2"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleCompleteAssignment(assignment); // 标记为完成
+                  }}
+                />
                 <FaTrash
                   className="trash-icon text-danger"
                   onClick={(e) => {
@@ -113,9 +158,12 @@ export default function Assignments({
         ))}
       </div>
 
-      {/* Delete Confirmation Dialog */}
+      {/* 删除确认弹窗 */}
       {showDeleteDialog && (
-        <div className="modal fade show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+        <div
+          className="modal fade show d-block"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">

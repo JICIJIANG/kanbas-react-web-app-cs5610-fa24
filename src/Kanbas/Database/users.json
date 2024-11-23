@@ -1,7 +1,8 @@
-[{
+[
+  {
     "_id": "123",
     "username": "iron_man",
-    "password": "stark123",
+    "password": "123",
     "firstName": "Tony",
     "lastName": "Stark",
     "email": "tony@stark.com",
@@ -15,7 +16,7 @@
   {
     "_id": "234",
     "username": "dark_knight",
-    "password": "wayne123",
+    "password": "123",
     "firstName": "Bruce",
     "lastName": "Wayne",
     "email": "bruce@wayne.com",
@@ -109,4 +110,5 @@
     "section": "S101",
     "lastActivity": "2020-11-11",
     "totalActivity": "21:32:43"
-  }]
+  }
+]

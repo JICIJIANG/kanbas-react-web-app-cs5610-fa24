@@ -1,41 +1,28 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { assignments as initialAssignments } from '../../Database';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  assignments: initialAssignments || [],
+  assignments: [], // 初始状态为空
 };
 
 const assignmentsSlice = createSlice({
-  name: 'assignments',
+  name: "assignments",
   initialState,
   reducers: {
-    addAssignment: (state, action) => {
-      // 确保不可变性
-      return {
-        ...state,
-        assignments: [...state.assignments, action.payload],
-      };
+    setAssignments: (state, action) => {
+      state.assignments = action.payload;
     },
-    deleteAssignment: (state, action) => {
-      return {
-        ...state,
-        assignments: state.assignments.filter(
-          assignment => assignment._id !== action.payload
-        ),
-      };
+    addAssignment: (state, action) => {
+      state.assignments.push(action.payload);
     },
     updateAssignment: (state, action) => {
-      return {
-        ...state,
-        assignments: state.assignments.map(assignment =>
-          assignment._id === action.payload._id
-            ? { ...assignment, ...action.payload }
-            : assignment
-        ),
-      };
+      const index = state.assignments.findIndex((a) => a._id === action.payload._id);
+      if (index >= 0) state.assignments[index] = action.payload;
+    },
+    deleteAssignment: (state, action) => {
+      state.assignments = state.assignments.filter((a) => a._id !== action.payload);
     },
   },
 });
 
-export const { addAssignment, deleteAssignment, updateAssignment } = assignmentsSlice.actions;
+export const { setAssignments, addAssignment, updateAssignment, deleteAssignment } = assignmentsSlice.actions;
 export default assignmentsSlice.reducer;

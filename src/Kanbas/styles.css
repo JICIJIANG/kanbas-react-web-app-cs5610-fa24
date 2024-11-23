@@ -30,6 +30,11 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
     --bs-btn-border-radius: var(--bs-border-radius-lg);
     margin-top: .25rem !important;
 }
+.btn-primary-success {
+  background-color: #198754; /* 设置背景颜色为红色 */
+  border-color: #198754; /* 设置边框颜色为红色 */
+  color: white;
+}
 
 .list-group.wd > .list-group-item.active {
     color: black;

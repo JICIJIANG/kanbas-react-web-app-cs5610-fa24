@@ -1,163 +1,123 @@
-import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { updateAssignment, addAssignment } from './reducer';
-import * as db from "../../Database";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { createAssignment, updateAssignment } from "./client"; // 后端 API 方法
+import { addAssignment, updateAssignment as updateAssignmentReducer } from "./reducer"; // Redux 方法
 
 export default function AssignmentEditor() {
-    const { cid, aid } = useParams();
-    const isNew = !aid;
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
+  const { cid, aid } = useParams(); // 获取课程 ID 和作业 ID
+  const isNew = !aid; // 判断是否为新作业
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-    // 从 Redux Store 获取 assignments
-    const assignments = useSelector(state => state.assignments.assignments);
-    const selectedAssignment = assignments.find(a => a._id === aid);
+  // 从 Redux Store 获取作业列表
+  const assignments = useSelector((state) => state.assignments?.assignments || []);
+  const currentAssignment = assignments.find((a) => a._id === aid) || {};
 
-    // 从数据库加载默认值
-    const course = db.courses.find(c => c._id === cid) || {};
-    const dueDate = course.endDate ? new Date(course.endDate) : new Date();
-    dueDate.setUTCHours(23, 59);
-    const availableFrom = course.startDate ? new Date(course.startDate) : new Date();
-    availableFrom.setUTCHours(23, 59);
+  // 初始状态设置
+  const [assignment, setAssignment] = useState({
+    ...currentAssignment,
+    _id: currentAssignment._id || new Date().getTime().toString(),
+    course: currentAssignment.course || cid,
+    title: currentAssignment.title || "New Assignment",
+    description: currentAssignment.description || "Assignment Description",
+    points: currentAssignment.points || 100,
+    dueDate: currentAssignment.dueDate || new Date().toISOString(),
+    availableFrom: currentAssignment.availableFrom || new Date().toISOString(),
+    until: currentAssignment.until || new Date().toISOString(),
+  });
 
-    // 设置 assignment 的初始状态
-    const [assignment, setAssignment] = useState(
-        selectedAssignment
-            ? {
-                ...selectedAssignment,
-                title: selectedAssignment.title || 'Add Assignment Name',
-                description: selectedAssignment.description || course.description || '', // 使用已有作业的描述或数据库默认
-                points: selectedAssignment.points || 100,
-                group: selectedAssignment.group || 'ASSIGNMENTS',
-                displayGradeAs: selectedAssignment.displayGradeAs || 'Percentage',
-                submissionType: selectedAssignment.submissionType || 'Online',
-                onlineEntryOptions: {
-                    textEntry: false,
-                    websiteURL: true,
-                    mediaRecordings: false,
-                    studentAnnotation: false,
-                    fileUploads: false,
-                    ...selectedAssignment.onlineEntryOptions,
-                },
-                assignTo: selectedAssignment.assignTo || 'Everyone',
-                dueDate: selectedAssignment.dueDate || dueDate.toISOString().slice(0, 16),
-                availableFrom: selectedAssignment.availableFrom || availableFrom.toISOString().slice(0, 16),
-                until: selectedAssignment.until || dueDate.toISOString().slice(0, 16),
-              }
-            : {
-                _id: new Date().getTime().toString(),
-                course: cid,
-                title: 'Add Assignment Name',
-                description: 'Add Assignment Description',
-                points: 100,
-                group: 'ASSIGNMENTS',
-                displayGradeAs: 'Percentage',
-                submissionType: 'Online',
-                onlineEntryOptions: {
-                    textEntry: false,
-                    websiteURL: false,
-                    mediaRecordings: false,
-                    studentAnnotation: false,
-                    fileUploads: false,
-                },
-                assignTo: 'Everyone',
-                dueDate: dueDate.toISOString().slice(0, 16),
-                availableFrom: availableFrom.toISOString().slice(0, 16),
-                until: dueDate.toISOString().slice(0, 16),
-              }
-    );
+  // 表单值变化处理
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setAssignment((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
 
-    // 表单输入处理函数
-    const handleInputChange = (event) => {
-        const { id, value } = event.target;
-        setAssignment(prevState => ({
-            ...prevState,
-            [id]: value,
-        }));
-    };
+  // 保存作业
+  const handleSave = async () => {
+    try {
+      if (isNew) {
+        const createdAssignment = await createAssignment(assignment); // 调用后端创建方法
+        dispatch(addAssignment(createdAssignment)); // 更新 Redux Store
+      } else {
+        const updatedAssignment = await updateAssignment(assignment); // 调用后端更新方法
+        dispatch(updateAssignmentReducer(updatedAssignment)); // 更新 Redux Store
+      }
+      navigate(`/Kanbas/Courses/${cid}/Assignments`); // 跳转回作业列表
+    } catch (error) {
+      console.error("Error saving assignment:", error);
+    }
+  };
 
-    const handleEntryOptionChange = (event) => {
-        const { id, checked } = event.target;
-        setAssignment(prevState => ({
-            ...prevState,
-            onlineEntryOptions: {
-                ...prevState.onlineEntryOptions,
-                [id]: checked,
-            }
-        }));
-    };
+  // 取消操作
+  const handleCancel = () => {
+    navigate(`/Kanbas/Courses/${cid}/Assignments`);
+  };
 
-    // 保存作业
-    const handleSave = () => {
-        const assignmentToSave = {
-            ...assignment,
-            _id: isNew ? new Date().getTime().toString() : assignment._id || new Date().getTime().toString(),
-            course: cid, // 确保包含当前课程 ID
-        };
-    
-        console.log("Dispatching addAssignment with:", assignmentToSave);
-    
-        if (isNew) {
-            dispatch(addAssignment(assignmentToSave));
-        } else {
-            dispatch(updateAssignment(assignmentToSave)); 
-        }
-        navigate(`/Kanbas/Courses/${cid}/Assignments`);
-    };
+  useEffect(() => {
+    if (!isNew && !currentAssignment._id) {
+      navigate(`/Kanbas/Courses/${cid}/Assignments`);
+    }
+  }, [isNew, currentAssignment, cid, navigate]);
 
-    // 取消操作
-    const handleCancel = () => {
-        navigate(`/Kanbas/Courses/${cid}/Assignments`);
-    };
+  return (
+    <div className="container mt-4">
+      <h1>{isNew ? "Create New Assignment" : "Edit Assignment"}</h1>
 
-    return (
-        <div className="container mt-4">
-            <h1>Assignment Editor</h1>
-            {/* Assignment Name */}
-            <div className="row mb-3">
-                <div className="col-md-12">
-                    <label htmlFor="title" className="form-label">Assignment Name</label>
-                    <input
-                        id="title"
-                        value={assignment.title}
-                        onChange={handleInputChange}
-                        className="form-control"
-                    />
-                </div>
-            </div>
+      {/* Title */}
+      <div className="row mb-3">
+        <div className="col-md-12">
+          <label htmlFor="title" className="form-label">
+            Assignment Title
+          </label>
+          <input
+            id="title"
+            value={assignment.title}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        </div>
+      </div>
 
-            {/* Description */}
-            <div className="row mb-3">
-                <div className="col-md-12">
-                    <textarea
-                        id="description"
-                        rows={8}
-                        className="form-control"
-                        value={assignment.description}
-                        onChange={handleInputChange}
-                        placeholder="Assignment Description"
-                    />
-                </div>
-            </div>
+      {/* Description */}
+      <div className="row mb-3">
+        <div className="col-md-12">
+          <label htmlFor="description" className="form-label">
+            Description
+          </label>
+          <textarea
+            id="description"
+            rows={5}
+            value={assignment.description}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        </div>
+      </div>
 
-            {/* Points */}
-            <div className="row mb-3">
-                <div className="col-md-4">
-                    <label htmlFor="points" className="form-label">Points</label>
-                    <input
-                        id="points"
-                        type="number"
-                        value={assignment.points}
-                        onChange={handleInputChange}
-                        className="form-control"
-                    />
-                </div>
-            </div>
+      {/* Points */}
+      <div className="row mb-3">
+        <div className="col-md-4">
+          <label htmlFor="points" className="form-label">
+            Points
+          </label>
+          <input
+            id="points"
+            type="number"
+            value={assignment.points}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        </div>
+      </div>
 
-            {/* Assignment Group */}
-            <div className="row mb-3">
+
+
+           {/* Assignment Group */}
+           <div className="row mb-3">
                 <div className="col-md-4">
                     <label htmlFor="group" className="form-label">Assignment Group</label>
                     <select
@@ -240,48 +200,60 @@ export default function AssignmentEditor() {
                 </div>
             </div>
 
-            {/* Due Dates */}
-            <div className="row mb-3">
-                <div className="col-md-4">
-                    <label htmlFor="dueDate" className="form-label">Due</label>
-                    <input
-                        type="datetime-local"
-                        id="dueDate"
-                        value={assignment.dueDate}
-                        onChange={handleInputChange}
-                        className="form-control"
-                    />
-                </div>
-            </div>
 
-            <div className="row mb-3">
-                <div className="col-md-4">
-                    <label htmlFor="availableFrom" className="form-label">Available from</label>
-                    <input
-                        type="datetime-local"
-                        id="availableFrom"
-                        value={assignment.availableFrom}
-                        onChange={handleInputChange}
-                        className="form-control"
-                    />
-                </div>
-                <div className="col-md-4">
-                    <label htmlFor="until" className="form-label">Until</label>
-                    <input
-                        type="datetime-local"
-                        id="until"
-                        value={assignment.until}
-                        onChange={handleInputChange}
-                        className="form-control"
-                    />
-                </div>
-            </div>
-
-            {/* Save and Cancel Buttons */}
-            <div className="d-flex justify-content-end">
-                <button onClick={handleCancel} className="btn btn-secondary me-2">Cancel</button>
-                <button onClick={handleSave} className="btn btn-success">Save</button>
-            </div>
+      {/* Due Date */}
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label htmlFor="dueDate" className="form-label">
+            Due Date
+          </label>
+          <input
+            id="dueDate"
+            type="datetime-local"
+            value={assignment.dueDate}
+            onChange={handleInputChange}
+            className="form-control"
+          />
         </div>
-    );
+        <div className="col-md-6">
+          <label htmlFor="availableFrom" className="form-label">
+            Available From
+          </label>
+          <input
+            id="availableFrom"
+            type="datetime-local"
+            value={assignment.availableFrom}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        </div>
+      </div>
+
+      {/* Until */}
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label htmlFor="until" className="form-label">
+            Until
+          </label>
+          <input
+            id="until"
+            type="datetime-local"
+            value={assignment.until}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        </div>
+      </div>
+
+      {/* Save and Cancel Buttons */}
+      <div className="d-flex justify-content-end">
+        <button onClick={handleCancel} className="btn btn-secondary me-2">
+          Cancel
+        </button>
+        <button onClick={handleSave} className="btn btn-success">
+          Save
+        </button>
+      </div>
+    </div>
+  );
 }

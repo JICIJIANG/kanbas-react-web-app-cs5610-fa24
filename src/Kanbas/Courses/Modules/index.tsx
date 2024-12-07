@@ -17,16 +17,13 @@ export default function Modules() {
   const { modules } = useSelector((state: any) => state.modulesReducer);
   const dispatch = useDispatch();
 
-  // 使用 useCallback 包裹 fetchModules 确保其稳定
-  const fetchModules = useCallback(async () => {
-    if (!cid) return;
+  const fetchModules = async () => {
     const modules = await coursesClient.findModulesForCourse(cid as string);
     dispatch(setModules(modules));
-  }, [cid, dispatch]); // 添加 cid 和 dispatch 作为依赖
-
+  };
   useEffect(() => {
-    fetchModules();
-  }, [fetchModules]); // 将 fetchModules 包括在依赖数组中
+      fetchModules();
+    }, []); 
 
   const createModuleForCourse = async () => {
       if (!cid) return;

@@ -15,7 +15,7 @@ export default function Users() {
      fetchUsers();
    }
  };
- const [name, setName] = useState("");
+ //const [name, setName] = useState("");
  const filterUsersByName = async (name: string) => {
    setName(name);
    if (name) {

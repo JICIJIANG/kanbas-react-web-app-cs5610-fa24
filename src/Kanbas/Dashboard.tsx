@@ -1,5 +1,5 @@
 import { Link} from "react-router-dom";
-import { useSelector} from "react-redux";
+//import { useSelector} from "react-redux";
 //import React, { useState } from "react";
 import "./styles.css";
 
@@ -25,7 +25,7 @@ setEnrolling: (enrolling: boolean) => void;
 updateEnrollment: (courseId: string, enrolled: boolean) => void;
 }) 
 {
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  //const { currentUser } = useSelector((state: any) => state.accountReducer);
   
   return (
     <div id="wd-dashboard">

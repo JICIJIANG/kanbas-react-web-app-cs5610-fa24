@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import { useParams } from "react-router";
 import { BsGripVertical } from 'react-icons/bs';
 import ModulesControls from './ModulesControls';
@@ -17,13 +17,15 @@ export default function Modules() {
   const { modules } = useSelector((state: any) => state.modulesReducer);
   const dispatch = useDispatch();
 
-  const fetchModules = async () => {
+  const fetchModules = useCallback(async () => {
     const modules = await coursesClient.findModulesForCourse(cid as string);
     dispatch(setModules(modules));
-  };
+  }, [cid, dispatch]); // Add cid and dispatch as dependencies
+
+  // Include fetchModules in the dependency array
   useEffect(() => {
-      fetchModules();
-    }, []); 
+    fetchModules();
+  }, [fetchModules]);
 
   const createModuleForCourse = async () => {
       if (!cid) return;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { FaCheck, FaUserCircle } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
 import { useParams, useNavigate } from "react-router";
@@ -14,14 +14,14 @@ export default function PeopleDetails() {
   const [role, setRole] = useState("");
   const [editing, setEditing] = useState(false);
 
-  const fetchUser = async () => {
+  const fetchUser = useCallback( async () => {
     if (!uid) return;
     const user = await client.findUserById(uid);
     setUser(user);
     setName(`${user.firstName} ${user.lastName}`);
     setEmail(user.email);
     setRole(user.role);
-  };
+  }, [uid]);
 
   const deleteUser = async (uid: string) => {
     await client.deleteUser(uid);
@@ -38,7 +38,7 @@ export default function PeopleDetails() {
 
   useEffect(() => {
     if (uid) fetchUser();
-  }, [uid]);
+  }, [uid, fetchUser]);
 
   if (!uid) return null;
 
